@@ -17,24 +17,24 @@ public class App {
         System.out.println("Choose a value for BlockSize in bytes: ");
         int blockSizeBytes = scanner.nextInt();
         //CALCULATE TAG, LINES, WORDS
-        int LINES = cacheSizeBytes / blockSizeBytes;
+        int linesMM = mainMemorySizeBytes / blockSizeBytes;
+        int linesCACHE = cacheSizeBytes / blockSizeBytes;
         // Output calculated values by Mapping Type - Parte 1
         if (mappingType == 1) {
             System.out.println("Chosen mapping: Direct Mapping");
             int TAG = mainMemorySizeBytes / cacheSizeBytes;
-            CalculateBits.calculateBitsDirectMapping(TAG, LINES, blockSizeBytes);
+            CalculateBits.calculateBitsDirectMapping(TAG, linesCACHE, blockSizeBytes);
             //MEMORIA PRINCIPAL--------------------------------------------------------------
-            int linesMM = mainMemorySizeBytes / blockSizeBytes;
             String[][][] mainM = new String[TAG][linesMM/blockSizeBytes][blockSizeBytes];
             DirectMemoryStorage.createMainMemory(TAG,linesMM,blockSizeBytes,mainM);
             DirectMemoryStorage.outputMainMemory(TAG,linesMM,blockSizeBytes,mainM);
 
             //MEMORIA CACHE------------------------------------------------------------------
-            String[][][] cacheM = new String[1][LINES][blockSizeBytes];
-            DirectMemoryStorage.createCacheMemory(TAG,LINES,blockSizeBytes,cacheM);
-            DirectMemoryStorage.outputCacheMemory(TAG,LINES,blockSizeBytes,cacheM);
+            String[][][] cacheM = new String[1][linesCACHE][blockSizeBytes];
+            DirectMemoryStorage.createCacheMemory(TAG,linesCACHE,blockSizeBytes,cacheM);
+            DirectMemoryStorage.outputCacheMemory(TAG,linesCACHE,blockSizeBytes,cacheM);
         } else if (mappingType == 2) {
-            int TAG = blockSizeBytes;
+            int TAG = linesMM;
             System.out.println("Chosen mapping: Associative Mapping");
             CalculateBits.calculateBitsAssociativeMapping(TAG, blockSizeBytes);
         }else{
