@@ -1,8 +1,7 @@
 import java.util.*;
 
 import entidades.CalculateBits;
-import entidades.MainMemory;
-import entidades.CacheMemory;
+import entidades.DirectMemoryStorage;
 
 public class App {
     public static void main(String[] args) {
@@ -18,26 +17,30 @@ public class App {
         System.out.println("Choose a value for BlockSize in bytes: ");
         int blockSizeBytes = scanner.nextInt();
         //CALCULATE TAG, LINES, WORDS
-        int TAG = mainMemorySizeBytes / cacheSizeBytes;
         int LINES = cacheSizeBytes / blockSizeBytes;
         // Output calculated values by Mapping Type - Parte 1
         if (mappingType == 1) {
             System.out.println("Chosen mapping: Direct Mapping");
+            int TAG = mainMemorySizeBytes / cacheSizeBytes;
             CalculateBits.calculateBitsDirectMapping(TAG, LINES, blockSizeBytes);
+            //MEMORIA PRINCIPAL--------------------------------------------------------------
+            int linesMM = mainMemorySizeBytes / blockSizeBytes;
+            String[][][] mainM = new String[TAG][linesMM/blockSizeBytes][blockSizeBytes];
+            DirectMemoryStorage.createMainMemory(TAG,linesMM,blockSizeBytes,mainM);
+            DirectMemoryStorage.outputMainMemory(TAG,linesMM,blockSizeBytes,mainM);
+
+            //MEMORIA CACHE------------------------------------------------------------------
+            String[][][] cacheM = new String[1][LINES][blockSizeBytes];
+            DirectMemoryStorage.createCacheMemory(TAG,LINES,blockSizeBytes,cacheM);
+            DirectMemoryStorage.outputCacheMemory(TAG,LINES,blockSizeBytes,cacheM);
         } else if (mappingType == 2) {
+            int TAG = blockSizeBytes;
             System.out.println("Chosen mapping: Associative Mapping");
-            CalculateBits.calculateBitsAssociativeMapping(TAG, LINES, blockSizeBytes);
+            CalculateBits.calculateBitsAssociativeMapping(TAG, blockSizeBytes);
+        }else{
+            System.out.println("Invalid mapping type. Please choose 1 or 2.");
         }
 
-        //MEMORIA PRINCIPAL--------------------------------------------------------------
-        //int linesMM = mainMemorySizeBytes / blockSizeBytes;
-        //String[][][] mainM = new String[TAG][linesMM/blockSizeBytes][blockSizeBytes];
-        //MainMemory.createMainMemory(TAG,linesMM,blockSizeBytes,mainM);
-        //MainMemory.outputMainMemory(TAG,linesMM,blockSizeBytes,mainM);
-
-        //MEMORIA CACHE------------------------------------------------------------------
-        //String[][][] cacheM = new String[TAG][LINES][blockSizeBytes];
-        
         scanner.close();
     }
 
