@@ -23,50 +23,23 @@ public class App {
         }
 
         // Calculate parameters
+        int TAG = mainMemorySizeBytes/cacheSizeBytes;
+        int LINES = cacheSizeBytes/blockSizeBytes;
+        int tagBits = (int) (Math.log(TAG) / Math.log(2));
+        int indexBits = (int) (Math.log(LINES) / Math.log(2));
         int blockOffsetBits = (int) (Math.log(blockSizeBytes) / Math.log(2));
-        int totalBlocks = mainMemorySizeBytes / blockSizeBytes;
-        int indexBits = (int) (Math.log(totalBlocks) / Math.log(2));
-        int tagBits = 32 - indexBits - blockOffsetBits;
 
         System.out.println("Number of bits used in TAG: " + tagBits);
         if (mappingType == 1) {
             System.out.println("Number of bits used in LINE: " + indexBits);
         } else {
-            System.out.println("Number of bits used in LINE: 0");
+            LINES = 0;
+            System.out.println("Number of bits used in LINE: " + LINES);
         }
         System.out.println("Number of bits used in WORD: " + blockOffsetBits);
         // Part 2 - Cache Hit and Cache Miss
         System.out.println("Enter sequence of addresses in hexadecimal (separated by space): ");
         scanner.nextLine(); // consume newline
-        String[] addressSeq = scanner.nextLine().split(" ");
-        Set<String> cache = new HashSet<>();// stores the values of cache memory
-        List<String> hits = new ArrayList<>();// register adresses that resulted in cache hit
-        List<String> misses = new ArrayList<>();// register adresses that resulted in cache misses
-
-        for (String address : addressSeq) {
-            if (cache.contains(address)) {
-                hits.add(address);
-            } else {
-                misses.add(address);
-                cache.add(address);
-                // Verifies if the cache is full
-                if (cache.size() > cacheSizeBytes / blockSizeBytes) { //
-                    // get the oldest address in the cache
-                    Iterator<String> iterator = cache.iterator();
-                    String oldestAddress = iterator.next();
-                    iterator.remove(); // Remove the oldest address from the cache
-                    misses.add(oldestAddress); // Adds the oldest address to the misses list
-                }
-            }
-        }
-
-        // Output Cache Hits
-        System.out.println("Cache Hits: " + hits.size());
-        System.out.println("Addresses generating Cache Hit: " + hits);
-
-        // Output Cache Misses
-        System.out.println("Cache Misses: " + misses.size());
-        System.out.println("Addresses generating Cache Miss: " + misses);
 
         scanner.close();
     }
