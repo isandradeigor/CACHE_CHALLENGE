@@ -26,21 +26,38 @@ public class App {
         int TAG = mainMemorySizeBytes/cacheSizeBytes;
         int LINES = cacheSizeBytes/blockSizeBytes;
         int tagBits = (int) (Math.log(TAG) / Math.log(2));
-        int indexBits = (int) (Math.log(LINES) / Math.log(2));
-        int blockOffsetBits = (int) (Math.log(blockSizeBytes) / Math.log(2));
+        int lineBits = (int) (Math.log(LINES) / Math.log(2));
+        int wordBits = (int) (Math.log(blockSizeBytes) / Math.log(2));
 
         System.out.println("Number of bits used in TAG: " + tagBits);
         if (mappingType == 1) {
-            System.out.println("Number of bits used in LINE: " + indexBits);
+            System.out.println("Number of bits used in LINE: " + lineBits);
         } else {
             LINES = 0;
             System.out.println("Number of bits used in LINE: " + LINES);
         }
-        System.out.println("Number of bits used in WORD: " + blockOffsetBits);
-        // Part 2 - Cache Hit and Cache Miss
-        System.out.println("Enter sequence of addresses in hexadecimal (separated by space): ");
-        scanner.nextLine(); // consume newline
+        System.out.println("Number of bits used in WORD: " + wordBits);
 
+        // Part 2 - Cache Hit and Cache Miss---------------------------------------------------------------------------------------
+        //System.out.println("Enter sequence of addresses in hexadecimal (separated by space): ");
+        
+        // Initialize cache
+        int[] tagBit = new int[(int) Math.pow(2, tagBits)];
+        int[] lineBit = new int[(int) Math.pow(2, lineBits)];
+        amountOfBits(tagBit);//verifies the amount of tagbits
+        amountOfBits(lineBit);//verifies the amount of tagbits
+        
+        
         scanner.close();
+    }
+
+    public static void amountOfBits(int[] argument) {
+        for(int i = 0; i < argument.length; i++){
+            argument[i] = i;
+        }
+        for(int i = 0; i < argument.length; i++){
+            System.out.print(argument[i] + ", "); 
+        }
+        System.out.println();
     }
 }
