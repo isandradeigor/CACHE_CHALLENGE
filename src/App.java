@@ -23,8 +23,8 @@ public class App {
         }
 
         // Calculate parameters
-        int TAG = mainMemorySizeBytes/cacheSizeBytes;
-        int LINES = cacheSizeBytes/blockSizeBytes;
+        int TAG = mainMemorySizeBytes / cacheSizeBytes;
+        int LINES = cacheSizeBytes / blockSizeBytes;
         int tagBits = (int) (Math.log(TAG) / Math.log(2));
         int lineBits = (int) (Math.log(LINES) / Math.log(2));
         int wordBits = (int) (Math.log(blockSizeBytes) / Math.log(2));
@@ -38,26 +38,39 @@ public class App {
         }
         System.out.println("Number of bits used in WORD: " + wordBits);
 
-        // Part 2 - Cache Hit and Cache Miss---------------------------------------------------------------------------------------
-        //System.out.println("Enter sequence of addresses in hexadecimal (separated by space): ");
-        
+        // Part 2 - Cache Hit and Cache
+        // Miss---------------------------------------------------------------------------------------
+        // System.out.println("Enter sequence of addresses in hexadecimal (separated by
+        // space): ");
+
         // Initialize cache
-        int[] tagBit = new int[(int) Math.pow(2, tagBits)];
-        int[] lineBit = new int[(int) Math.pow(2, lineBits)];
-        amountOfBits(tagBit);//verifies the amount of tagbits
-        amountOfBits(lineBit);//verifies the amount of tagbits
-        
-        
+        int tagBitting = (int) Math.pow(2, tagBits);
+        int[][] tagBit = new int[tagBitting][];
+        int lineBit = (int) Math.pow(2, lineBits);
+
+        // Calculando o número de linhas para cada entrada em tagBit
+        int linesPerTag = lineBit / tagBitting;
+
+        // Inicializar tagBit e mainM dentro de tagBit
+        for (int i = 0; i < tagBitting; i++) {
+            tagBit[i] = new int[linesPerTag * blockSizeBytes];
+            representation(tagBit[i], linesPerTag, blockSizeBytes);
+        }
+        for (int i = 0; i < tagBit.length; i++) {
+            System.out.println("Tag " + i + ":");
+            for (int j = 0; j < tagBit[i].length; j++) {
+                System.out.print(tagBit[i][j] + " ");
+            }
+            System.out.println("\n--------------------");
+        }
         scanner.close();
     }
 
-    public static void amountOfBits(int[] argument) {
-        for(int i = 0; i < argument.length; i++){
-            argument[i] = i;
+    public static void representation(int[] argument, int rows, int cols) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                argument[i * cols + j] = (int) Math.round(Math.random() * 10);
+            }
         }
-        for(int i = 0; i < argument.length; i++){
-            System.out.print(argument[i] + ", "); 
-        }
-        System.out.println();
     }
 }
