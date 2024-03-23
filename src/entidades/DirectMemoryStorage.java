@@ -5,7 +5,7 @@ public class DirectMemoryStorage {
         for(int i = 0; i < TAG; i++){
             for(int j = 0; j < linesMM/TAG; j++){
                 for(int k = 0; k < blockSizeBytes; k++){
-                    mainM[i][j][k] = "0x" + Integer.toHexString((int)(Math.random()*10));
+                    mainM[i][j][k] = "0x" + Integer.toString((int)(Math.random()*10));
                 }
             }
         }
@@ -46,4 +46,5 @@ public class DirectMemoryStorage {
         }
         System.out.println("----------------------------------------------------------------------------------");
     }
+    
 }

@@ -54,7 +54,7 @@ public class App {
             System.out.println("Enter an addresses: ");
             String address = scanner.nextLine();
             String[] addressArray = address.split(" ");
-            
+
         } // Invalid Mapping
         else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
