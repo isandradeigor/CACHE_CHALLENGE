@@ -16,6 +16,7 @@ public class App {
         int cacheSizeBytes = scanner.nextInt();
         System.out.println("Choose a value for BlockSize in bytes: ");
         int blockSizeBytes = scanner.nextInt();
+        scanner.nextLine();
         // Calculating the number of lines
         int linesMM = mainMemorySizeBytes / blockSizeBytes;
         int linesCACHE = cacheSizeBytes / blockSizeBytes;
@@ -32,16 +33,11 @@ public class App {
             String[][][] cacheM = new String[1][linesCACHE][blockSizeBytes];
             DirectMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
-            while (scanner.hasNext()) {
-                String address = scanner.nextLine();
-                String[] addressArray = address.split(" ");
-                
-                //code more here
-                System.out.println("Continue? (y/n)");
-                if (scanner.nextLine().equals("n")) {
-                    break;
-                }
-            }
+            // Looking fro address
+            System.out.println("Enter an addresses: ");
+            String address = scanner.nextLine();
+            String[] addressArray = address.split(" ");
+            
         } // Associative Mapping
         else if (mappingType == 2) {
             int TAG = linesMM;
@@ -55,15 +51,10 @@ public class App {
             String[][] cacheM = new String[linesCACHE][blockSizeBytes];
             AssociativeMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
-            while (scanner.hasNext()) {
-                String address = scanner.nextLine();
-                String[] addressArray = address.split(" ");
-                //code more here
-                System.out.println("Continue? (y/n)");
-                if (scanner.nextLine().equals("n")) {
-                    break;
-                }
-            }
+            System.out.println("Enter an addresses: ");
+            String address = scanner.nextLine();
+            String[] addressArray = address.split(" ");
+            
         } // Invalid Mapping
         else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
