@@ -6,7 +6,7 @@ import entidades.AssociativeMemoryStorage;
 public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        //Setting Up Memories
+        // Setting Up Memories
         System.out.println("Choose memory mapping type: ");
         System.out.println("1. Direct Mapping or 2. Associative Mapping");
         int mappingType = scanner.nextInt();
@@ -33,7 +33,10 @@ public class App {
             DirectMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             while (scanner.hasNext()) {
-                // code here
+                String address = scanner.nextLine();
+                String[] addressArray = address.split(" ");
+                
+                //code more here
                 System.out.println("Continue? (y/n)");
                 if (scanner.nextLine().equals("n")) {
                     break;
@@ -53,7 +56,9 @@ public class App {
             AssociativeMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             while (scanner.hasNext()) {
-                // code here
+                String address = scanner.nextLine();
+                String[] addressArray = address.split(" ");
+                //code more here
                 System.out.println("Continue? (y/n)");
                 if (scanner.nextLine().equals("n")) {
                     break;
