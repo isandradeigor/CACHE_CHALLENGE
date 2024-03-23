@@ -21,26 +21,22 @@ public class AssociativeMemoryStorage {
         System.out.println();
         System.out.println("----------------------------------------------------------------------------------");
     }
-    public static void createCacheMemory(int TAG, int LINES, int blockSizeBytes, String[][][] cacheM) {
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < LINES; j++) {
-                for (int k = 0; k < blockSizeBytes; k++) {
-                    cacheM[i][j][k] = "0x00";
-                }
+    public static void createCacheMemory(int TAG, int LINES, int blockSizeBytes, String[][] cacheM) {
+        for (int j = 0; j < LINES; j++) {
+            for (int k = 0; k < blockSizeBytes; k++) {
+                cacheM[j][k] = "0x00";
             }
         }
     }
-    public static void outputCacheMemory(int TAG, int LINES, int blockSizeBytes, String[][][] cacheM) {
+    public static void outputCacheMemory(int TAG, int LINES, int blockSizeBytes, String[][] cacheM) {
         System.out.println("\nMEMORIA CACHE---------------------------------------------------------------");
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < LINES; j++) {
-                for (int k = 0; k < blockSizeBytes; k++) {
-                    System.out.print(cacheM[i][j][k] + " ");
-                }
-                System.out.println();
+        for (int j = 0; j < LINES; j++) {
+            for (int k = 0; k < blockSizeBytes; k++) {
+                System.out.print(cacheM[j][k] + " ");
             }
             System.out.println();
         }
+        System.out.println();
         System.out.println("----------------------------------------------------------------------------------");
     }
 }

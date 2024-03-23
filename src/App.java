@@ -1,5 +1,4 @@
 import java.util.*;
-
 import entidades.CalculateBits;
 import entidades.DirectMemoryStorage;
 import entidades.AssociativeMemoryStorage;
@@ -7,7 +6,7 @@ import entidades.AssociativeMemoryStorage;
 public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        // Part 1 - Setting Up Memories
+        //Setting Up Memories
         System.out.println("Choose memory mapping type: ");
         System.out.println("1. Direct Mapping or 2. Associative Mapping");
         int mappingType = scanner.nextInt();
@@ -17,7 +16,7 @@ public class App {
         int cacheSizeBytes = scanner.nextInt();
         System.out.println("Choose a value for BlockSize in bytes: ");
         int blockSizeBytes = scanner.nextInt();
-        //CALCULATE TAG, LINES, WORDS
+        // Calculating the number of lines
         int linesMM = mainMemorySizeBytes / blockSizeBytes;
         int linesCACHE = cacheSizeBytes / blockSizeBytes;
         // Direct Mapping
@@ -25,33 +24,46 @@ public class App {
             System.out.println("Chosen mapping: Direct Mapping");
             int TAG = mainMemorySizeBytes / cacheSizeBytes;
             CalculateBits.calculateBitsDirectMapping(TAG, linesCACHE, blockSizeBytes);
-            //MAIN MEMORY--------------------------------------------------------------
-            String[][][] mainM = new String[TAG][linesMM/blockSizeBytes][blockSizeBytes];
-            DirectMemoryStorage.createMainMemory(TAG,linesMM,blockSizeBytes,mainM);
-            DirectMemoryStorage.outputMainMemory(TAG,linesMM,blockSizeBytes,mainM);
-            //CACHE MEMORY-------------------------------------------------------------
+            // MAIN MEMORY--------------------------------------------------------------
+            String[][][] mainM = new String[TAG][linesMM / blockSizeBytes][blockSizeBytes];
+            DirectMemoryStorage.createMainMemory(TAG, linesMM, blockSizeBytes, mainM);
+            DirectMemoryStorage.outputMainMemory(TAG, linesMM, blockSizeBytes, mainM);
+            // CACHE MEMORY-------------------------------------------------------------
             String[][][] cacheM = new String[1][linesCACHE][blockSizeBytes];
-            DirectMemoryStorage.createCacheMemory(TAG,linesCACHE,blockSizeBytes,cacheM);
-            DirectMemoryStorage.outputCacheMemory(TAG,linesCACHE,blockSizeBytes,cacheM);
-        }// Associative Mapping
+            DirectMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            while (scanner.hasNext()) {
+                // code here
+                System.out.println("Continue? (y/n)");
+                if (scanner.nextLine().equals("n")) {
+                    break;
+                }
+            }
+        } // Associative Mapping
         else if (mappingType == 2) {
             int TAG = linesMM;
             System.out.println("Chosen mapping: Associative Mapping");
             CalculateBits.calculateBitsAssociativeMapping(TAG, blockSizeBytes);
-            //MAIN MEMORY--------------------------------------------------------------
+            // MAIN MEMORY--------------------------------------------------------------
             String[][] mainM = new String[TAG][blockSizeBytes];
             AssociativeMemoryStorage.createMainMemory(TAG, linesMM, blockSizeBytes, mainM);
             AssociativeMemoryStorage.outputMainMemory(TAG, linesMM, blockSizeBytes, mainM);
-            //CACHE MEMORY-------------------------------------------------------------
-            String[][][] cacheM = new String[1][linesCACHE][blockSizeBytes];
-            DirectMemoryStorage.createCacheMemory(TAG,linesCACHE,blockSizeBytes,cacheM);
-            DirectMemoryStorage.outputCacheMemory(TAG,linesCACHE,blockSizeBytes,cacheM);
-        }// Invalid Mapping
-        else{
+            // CACHE MEMORY-------------------------------------------------------------
+            String[][] cacheM = new String[linesCACHE][blockSizeBytes];
+            AssociativeMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            while (scanner.hasNext()) {
+                // code here
+                System.out.println("Continue? (y/n)");
+                if (scanner.nextLine().equals("n")) {
+                    break;
+                }
+            }
+        } // Invalid Mapping
+        else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
         }
 
         scanner.close();
     }
-
 }
