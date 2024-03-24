@@ -26,17 +26,49 @@ public class App {
             int TAG = mainMemorySizeBytes / cacheSizeBytes;
             CalculateBits.calculateBitsDirectMapping(TAG, linesCACHE, blockSizeBytes);
             // MAIN MEMORY--------------------------------------------------------------
-            String[][][] mainM = new String[TAG][linesMM / blockSizeBytes][blockSizeBytes];
+            String[][][] mainM = new String[TAG][linesMM / TAG][blockSizeBytes];
             DirectMemoryStorage.createMainMemory(TAG, linesMM, blockSizeBytes, mainM);
+
             DirectMemoryStorage.outputMainMemory(TAG, linesMM, blockSizeBytes, mainM);
             // CACHE MEMORY-------------------------------------------------------------
             String[][][] cacheM = new String[1][linesCACHE][blockSizeBytes];
             DirectMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
-            // Looking fro address
-            System.out.println("Enter an addresses: ");
-            String address = scanner.nextLine();
-            String[] addressArray = address.split(" ");
+            // Looking for addresses
+            System.out.println("Enter addresses separated by space: ");
+            String addressInput = scanner.nextLine();
+            String[] addressArray = addressInput.split(" ");
+
+            // Handling Cache Hits and Misses
+            ArrayList<String> hits = new ArrayList<>();
+            ArrayList<String> misses = new ArrayList<>();
+            int cacheHits = 0;
+            int cacheMisses = 0;
+            for (String addr : addressArray) {
+                boolean hit = false;
+                for (int i = 0; i < linesCACHE; i++) {
+                    if (cacheM[0][i][0] != null && cacheM[0][i][0].equals(addr)) { // Check if address is in cache
+                        cacheHits++;
+                        hits.add(addr);
+                        hit = true;
+                        break;
+                    }
+                }
+                if (!hit) { // Cache Miss
+                    cacheMisses++;
+                    misses.add(addr);
+                    // Replace random cache line with new address
+                    int randomIndex = new Random().nextInt(linesCACHE);
+                    for (int i = 0; i < blockSizeBytes; i++) {
+                        cacheM[0][randomIndex][i] = addr;
+                    }
+                }
+            }
+            // Output Cache Hits and Misses
+            System.out.println("Cache Hits: " + cacheHits);
+            System.out.println("Cache Hit Addresses: " + hits);
+            System.out.println("Cache Misses: " + cacheMisses);
+            System.out.println("Cache Miss Addresses: " + misses);
             
         } // Associative Mapping
         else if (mappingType == 2) {
@@ -51,10 +83,42 @@ public class App {
             String[][] cacheM = new String[linesCACHE][blockSizeBytes];
             AssociativeMemoryStorage.createCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
-            System.out.println("Enter an addresses: ");
-            String address = scanner.nextLine();
-            String[] addressArray = address.split(" ");
+            // Looking for addresses
+            System.out.println("Enter addresses separated by space: ");
+            String addressInput = scanner.nextLine();
+            String[] addressArray = addressInput.split(" ");
 
+            // Handling Cache Hits and Misses
+            ArrayList<String> hits = new ArrayList<>();
+            ArrayList<String> misses = new ArrayList<>();
+            int cacheHits = 0;
+            int cacheMisses = 0;
+            for (String addr : addressArray) {
+                boolean hit = false;
+                for (int i = 0; i < linesCACHE; i++) {
+                    if (cacheM[i][0] != null && cacheM[i][0].equals(addr)) { // Check if address is in cache
+                        cacheHits++;
+                        hits.add(addr);
+                        hit = true;
+                        break;
+                    }
+                }
+                if (!hit) { // Cache Miss
+                    cacheMisses++;
+                    misses.add(addr);
+                    // Replace random cache line with new address
+                    int randomIndex = new Random().nextInt(linesCACHE);
+                    for (int i = 0; i < blockSizeBytes; i++) {
+                        cacheM[randomIndex][i] = addr;
+                    }
+                }
+            }
+            // Output Cache Hits and Misses
+            System.out.println("Cache Hits: " + cacheHits);
+            System.out.println("Cache Hit Addresses: " + hits);
+            System.out.println("Cache Misses: " + cacheMisses);
+            System.out.println("Cache Miss Addresses: " + misses);
+            
         } // Invalid Mapping
         else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
