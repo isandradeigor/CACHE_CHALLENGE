@@ -15,7 +15,16 @@ public class CalculateBits {
         System.out.println("TAG: " + tagBits + " bits");
         System.out.println("WORD: " + wordBits + " bits");
     }
-    public static void convertAddressToBits(String[] inpuValues){
-
+    public static void convertAddressToBits(String[] inputValues,int tagAddress,int lineAddress,int wordAddress) {
+        for (int i = 0; i < inputValues.length; i++) {
+            // Access each element in the inputValues array here
+            inputValues[i] = inputValues[i].replace("0x", "");
+            inputValues[i] = Integer.toBinaryString(Integer.parseInt(inputValues[i], 16));
+            System.out.println(inputValues[i]);
+            tagAddress = Integer.parseInt(inputValues[i].substring(0, 1), 2);
+            lineAddress = Integer.parseInt(inputValues[i].substring(2, 3), 2);
+            wordAddress = Integer.parseInt(inputValues[i].substring(4, 5), 2);
+            System.out.println("TAG: " + tagAddress + " LINES: " + lineAddress + " WORD: " + wordAddress);
+        }
     }
 }
