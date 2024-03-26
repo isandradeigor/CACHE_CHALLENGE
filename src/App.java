@@ -36,40 +36,10 @@ public class App {
             DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             // Looking for addresses
             System.out.println("Enter addresses separated by space: ");
-            String addressInput = scanner.nextLine();
-            String[] addressArray = addressInput.split(" ");
-
-            // Handling Cache Hits and Misses
-            ArrayList<String> hits = new ArrayList<>();
-            ArrayList<String> misses = new ArrayList<>();
-            int cacheHits = 0;
-            int cacheMisses = 0;
-            for (String addr : addressArray) {
-                boolean hit = false;
-                for (int i = 0; i < linesCACHE; i++) {
-                    if (cacheM[0][i][0] != null && cacheM[0][i][0].equals(addr)) { // Check if address is in cache
-                        cacheHits++;
-                        hits.add(addr);
-                        hit = true;
-                        break;
-                    }
-                }
-                if (!hit) { // Cache Miss
-                    cacheMisses++;
-                    misses.add(addr);
-                    // Replace random cache line with new address
-                    int randomIndex = new Random().nextInt(linesCACHE);
-                    for (int i = 0; i < blockSizeBytes; i++) {
-                        cacheM[0][randomIndex][i] = addr;
-                    }
-                }
-            }
-            // Output Cache Hits and Misses
-            System.out.println("Cache Hits: " + cacheHits);
-            System.out.println("Cache Hit Addresses: " + hits);
-            System.out.println("Cache Misses: " + cacheMisses);
-            System.out.println("Cache Miss Addresses: " + misses);
-            
+            String[] inputValues = scanner.nextLine().split(" ");
+            int cacheHit = searchCacheAndRam(TAG, linesMM, blockSizeBytes, mainM, cacheM, linesCACHE, inputValues);
+            System.out.println("Número total de hits na cache: " + cacheHit);
+            System.out.println("Número total de misses na cache: " + (inputValues.length - cacheHit));
         } // Associative Mapping
         else if (mappingType == 2) {
             int TAG = linesMM;
@@ -85,45 +55,113 @@ public class App {
             AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             // Looking for addresses
             System.out.println("Enter addresses separated by space: ");
-            String addressInput = scanner.nextLine();
-            String[] addressArray = addressInput.split(" ");
-
-            // Handling Cache Hits and Misses
-            ArrayList<String> hits = new ArrayList<>();
-            ArrayList<String> misses = new ArrayList<>();
-            int cacheHits = 0;
-            int cacheMisses = 0;
-            for (String addr : addressArray) {
-                boolean hit = false;
-                for (int i = 0; i < linesCACHE; i++) {
-                    if (cacheM[i][0] != null && cacheM[i][0].equals(addr)) { // Check if address is in cache
-                        cacheHits++;
-                        hits.add(addr);
-                        hit = true;
-                        break;
-                    }
-                }
-                if (!hit) { // Cache Miss
-                    cacheMisses++;
-                    misses.add(addr);
-                    // Replace random cache line with new address
-                    int randomIndex = new Random().nextInt(linesCACHE);
-                    for (int i = 0; i < blockSizeBytes; i++) {
-                        cacheM[randomIndex][i] = addr;
-                    }
-                }
-            }
-            // Output Cache Hits and Misses
-            System.out.println("Cache Hits: " + cacheHits);
-            System.out.println("Cache Hit Addresses: " + hits);
-            System.out.println("Cache Misses: " + cacheMisses);
-            System.out.println("Cache Miss Addresses: " + misses);
+            String[] inputValues = scanner.nextLine().split(" ");
             
+            // Executando a função para buscar valores na cache e na RAM
+            int cacheHit = searchCacheAndRamAssociative(TAG, linesMM, blockSizeBytes, mainM, cacheM, linesCACHE, inputValues);
+            
+            // Exibindo o número total de hits e misses na cache
+            System.out.println("Número total de hits na cache: " + cacheHit);
+            System.out.println("Número total de misses na cache: " + (inputValues.length - cacheHit));
         } // Invalid Mapping
         else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
         }
-
         scanner.close();
+    }
+
+    public static int searchCacheAndRam(int TAG, int linesMM, int blockSizeBytes, String[][][] mainM,
+        String[][][] cacheM,
+        int LINES, String[] inputValues) {
+        int cacheHit = 0;
+        for (String value : inputValues) {
+            boolean foundInCache = false;
+            // Verificando se o valor está na cache
+            for (int j = 0; j < LINES; j++) {
+                for (int k = 0; k < blockSizeBytes; k++) {
+                    if (cacheM[0][j][k].equals(value)) {
+                        foundInCache = true;
+                        cacheHit++;
+                        break;
+                    }
+                }
+                if (foundInCache) {
+                    break;
+                }
+            }
+
+            if (!foundInCache) {
+                // Searching in MAIN MEMORY (RAM)
+                boolean foundInMainMemory = false;
+                for (int i = 0; i < TAG; i++) {
+                    for (int j = 0; j < linesMM / TAG; j++) {
+                        for (int k = 0; k < blockSizeBytes; k++) {
+                            if (mainM[i][j][k].equals(value)) {
+                                foundInMainMemory = true;
+                                // Copiando a linha inteira da memória principal para a cache
+                                for (int l = 0; l < LINES; l++) {
+                                    for (int m = 0; m < blockSizeBytes; m++) {
+                                        cacheM[0][l][m] = mainM[i][j][m];
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        if (foundInMainMemory) {
+                            break;
+                        }
+                    }
+                    if (foundInMainMemory) {
+                        break;
+                    }
+                }
+            }
+        }
+        return cacheHit;
+    }
+    public static int searchCacheAndRamAssociative(int TAG, int linesMM, int blockSizeBytes, String[][] mainM, String[][] cacheM,
+            int linesCACHE, String[] inputValues) {
+        int cacheHit = 0;
+
+        for (String value : inputValues) {
+            boolean foundInCache = false;
+
+            // Verificando se o valor está na cache
+            for (int j = 0; j < linesCACHE; j++) {
+                for (int k = 0; k < blockSizeBytes; k++) {
+                    if (cacheM[j][k].equals(value)) {
+                        foundInCache = true;
+                        cacheHit++;
+                        break;
+                    }
+                }
+                if (foundInCache) {
+                    break;
+                }
+            }
+
+            if (!foundInCache) {
+                // Procurando na memória principal (RAM)
+                boolean foundInMainMemory = false;
+                for (int i = 0; i < TAG; i++) {
+                    for (int k = 0; k < blockSizeBytes; k++) {
+                        if (mainM[i][k].equals(value)) {
+                            foundInMainMemory = true;
+                            // Copiando a linha inteira da memória principal para a cache
+                            for (int l = 0; l < linesCACHE; l++) {
+                                for (int m = 0; m < blockSizeBytes; m++) {
+                                    cacheM[l][m] = mainM[i][m];
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if (foundInMainMemory) {
+                        break;
+                    }
+                }
+            }
+        }
+        return cacheHit;
     }
 }
