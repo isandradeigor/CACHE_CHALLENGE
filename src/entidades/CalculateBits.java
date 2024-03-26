@@ -15,4 +15,7 @@ public class CalculateBits {
         System.out.println("TAG: " + tagBits + " bits");
         System.out.println("WORD: " + wordBits + " bits");
     }
+    public static void convertAddressToBits(String[] inpuValues){
+
+    }
 }
