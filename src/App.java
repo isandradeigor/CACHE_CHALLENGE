@@ -56,10 +56,11 @@ public class App {
             // Looking for addresses
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
-            
+
             // Executando a função para buscar valores na cache e na RAM
-            int cacheHit = searchCacheAndRamAssociative(TAG, linesMM, blockSizeBytes, mainM, cacheM, linesCACHE, inputValues);
-            
+            int cacheHit = searchCacheAndRamAssociative(TAG, linesMM, blockSizeBytes, mainM, cacheM, linesCACHE,
+                    inputValues);
+
             // Exibindo o número total de hits e misses na cache
             System.out.println("Número total de hits na cache: " + cacheHit);
             System.out.println("Número total de misses na cache: " + (inputValues.length - cacheHit));
@@ -71,47 +72,51 @@ public class App {
     }
 
     public static int searchCacheAndRam(int TAG, int linesMM, int blockSizeBytes, String[][][] mainM,
-        String[][][] cacheM,
-        int LINES, String[] inputValues) {
-    int cacheHit = 0;
-    for (String value : inputValues) {
-        boolean foundInCache = false;
-        // Verificando se o valor está na cache
-        for (int j = 0; j < LINES; j++) {
-            for (int k = 0; k < blockSizeBytes; k++) {
-                if (cacheM[0][j][k].equals(value)) {
-                    foundInCache = true;
-                    cacheHit++;
+            String[][][] cacheM,
+            int LINES, String[] inputValues) {
+        int cacheHit = 0;
+        for (String value : inputValues) {
+            boolean foundInCache = false;
+            // Verificando se o valor está na cache
+            for (int j = 0; j < LINES; j++) {
+                for (int k = 0; k < blockSizeBytes; k++) {
+                    if (cacheM[0][j][k].equals(value)) {
+                        foundInCache = true;
+                        cacheHit++;
+                        break;
+                    }
+                }
+                if (foundInCache) {
                     break;
                 }
             }
-            if (foundInCache) {
-                break;
-            }
-        }
 
-        if (!foundInCache) {
-            // Searching in MAIN MEMORY (RAM)
-            boolean foundInMainMemory = false;
-            for (int i = 0; i < TAG; i++) {
-                for (int j = 0; j < linesMM / TAG; j++) {
-                    for (int k = 0; k < blockSizeBytes; k++) {
-                        if (mainM[i][j][k].equals(value)) {
-                            foundInMainMemory = true;
-                            // Copiando a linha inteira da memória principal para a cache
-                            for (int l = 0; l < LINES; l++) {
-                                for (int m = 0; m < blockSizeBytes; m++) {
-                                    cacheM[0][l][m] = mainM[i][j][m];
+            if (!foundInCache) {
+                // Searching in MAIN MEMORY (RAM)
+                boolean foundInMainMemory = false;
+                for (int i = 0; i < TAG; i++) {
+                    for (int j = 0; j < linesMM / TAG; j++) {
+                        for (int k = 0; k < blockSizeBytes; k++) {
+                            if (mainM[i][j][k].equals(value)) {
+                                foundInMainMemory = true;
+                                // Copiando a linha inteira da memória principal para a cache
+                                for (int l = 0; l < LINES; l++) {
+                                    for (int m = 0; m < blockSizeBytes; m++) {
+                                        cacheM[0][l][m] = mainM[i][j][m];
+                                    }
                                 }
-                            }
-                            // Mostrando o estado atual da memória cache
-                            System.out.println("Atualização da cache:");
-                            for (String[] line : cacheM[0]) {
-                                for (String val : line) {
-                                    System.out.print(val + " ");
+                                // Mostrando o estado atual da memória cache
+                                System.out.println("Atualização da cache:");
+                                for (String[] line : cacheM[0]) {
+                                    for (String val : line) {
+                                        System.out.print(val + " ");
+                                    }
+                                    System.out.println();
                                 }
-                                System.out.println();
+                                break;
                             }
+                        }
+                        if (foundInMainMemory) {
                             break;
                         }
                     }
@@ -119,16 +124,13 @@ public class App {
                         break;
                     }
                 }
-                if (foundInMainMemory) {
-                    break;
-                }
             }
         }
+        return cacheHit;
     }
-    return cacheHit;
-}
 
-    public static int searchCacheAndRamAssociative(int TAG, int linesMM, int blockSizeBytes, String[][] mainM, String[][] cacheM,
+    public static int searchCacheAndRamAssociative(int TAG, int linesMM, int blockSizeBytes, String[][] mainM,
+            String[][] cacheM,
             int linesCACHE, String[] inputValues) {
         int cacheHit = 0;
 
