@@ -15,7 +15,9 @@ public class CalculateBits {
         System.out.println("TAG: " + tagBits + " bits");
         System.out.println("WORD: " + wordBits + " bits");
     }
-    public static void convertAddressToBitsDirect(String[] inputValues, String[][][] mainM) {
+    public static void convertAddressToBitsDirect(String[] inputValues, String[][][] mainM, String[][][] cacheM, int blockSizeBytes) {
+        int cacheHitCount = 0;
+        int cacheMissCount = 0;
         for (int i = 0; i < inputValues.length; i++) {
             // Access each element in the inputValues array here
             inputValues[i] = inputValues[i].replace("0x", "");
@@ -29,9 +31,22 @@ public class CalculateBits {
             wordAddress = Integer.parseInt(inputValues[i].substring(4), 2);
             System.out.println("TAG: " + tagAddress + " LINES: " + lineAddress + " WORD: " + wordAddress);
             System.out.println("MAIN MEMORY ADDRESS: " + mainM[tagAddress][lineAddress][wordAddress]);
+            System.out.println("CACHE MEMORY ADDRESS: " + mainM[tagAddress][lineAddress][wordAddress]);
+            boolean cacheHit = false;
+            for(int j = 0; j < blockSizeBytes - 1; j++){
+                if(cacheM[0][lineAddress][j] == mainM[tagAddress][lineAddress][j]){
+                    cacheHit = true;
+                    cacheHitCount++;
+                }
+            }
         }
+        System.out.println("-----------------------------");
+        System.out.println("CACHE HITS: " + cacheHitCount);
+        System.out.println("CACHE MISSES: " + cacheMissCount);
     }
-    public static void convertAddressToBitsAssociative(String[] inputValues, String[][] mainM) {
+    public static void convertAddressToBitsAssociative(String[] inputValues, String[][] mainM, String[][] cacheM,int blockSizeBytes) {
+        int cacheHitCount = 0;
+        int cacheMissCount = 0;
         for (int i = 0; i < inputValues.length; i++) {
             // Access each element in the inputValues array here
             inputValues[i] = inputValues[i].replace("0x", "");
@@ -43,6 +58,24 @@ public class CalculateBits {
             tagAddress = Integer.parseInt(inputValues[i].substring(0, inputValues[i].length() - 2), 2);
             System.out.println("TAG: " + tagAddress + " WORD: " + wordAddress);
             System.out.println("MAIN MEMORY ADDRESS: " + mainM[tagAddress][wordAddress]);
+            System.out.println("CACHE MEMORY ADDRESS: " + mainM[tagAddress][wordAddress]);
+            boolean cacheHit = false;
+            for(int j = 0; j < blockSizeBytes - 1; j++){
+                if(cacheM[j][wordAddress] == mainM[tagAddress][wordAddress]){
+                    cacheHit = true;
+                    cacheHitCount++;
+                }
+            }
+            if(cacheHit == false){
+                int randomTag = (int) Math.round(Math.random() * (blockSizeBytes - 1));
+                for(int j = 0; j < blockSizeBytes; j++){
+                    cacheM[randomTag][j] = mainM[tagAddress][j];
+                }
+                cacheMissCount++;
+            }
         }
+        System.out.println("-----------------------------");
+        System.out.println("CACHE HITS: " + cacheHitCount);
+        System.out.println("CACHE MISSES: " + cacheMissCount);
     }
 }

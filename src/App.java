@@ -2,7 +2,6 @@ import java.util.*;
 import entidades.CalculateBits;
 import entidades.DirectMemoryStorage;
 import entidades.AssociativeMemoryStorage;
-
 public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -38,7 +37,8 @@ public class App {
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
             // Convert addresses to bits
-            CalculateBits.convertAddressToBitsDirect(inputValues, mainM);
+            CalculateBits.convertAddressToBitsDirect(inputValues, mainM, cacheM, blockSizeBytes);
+            DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
             // Checking if the address is in the cache
             
         } // Associative Mapping
@@ -57,8 +57,9 @@ public class App {
             // Looking for addresses
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
-            CalculateBits.convertAddressToBitsAssociative(inputValues, mainM);
+            CalculateBits.convertAddressToBitsAssociative(inputValues, mainM, cacheM, blockSizeBytes);
 
+            AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
         } // Invalid Mapping
         else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
