@@ -38,31 +38,9 @@ public class App {
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
             // Convert addresses to bits
-            int tagAddress = 0;
-            int lineAddress = 0;
-            int wordAddress = 0;
-            CalculateBits.convertAddressToBits(inputValues, tagAddress, lineAddress, wordAddress);
+            CalculateBits.convertAddressToBitsDirect(inputValues, mainM);
             // Checking if the address is in the cache
-            boolean cacheHit = false;
-            for (int i = 0; i < linesCACHE; i++) {
-                if (cacheM[0][i][0] != null && cacheM[0][i][0].equals(mainM[tagAddress][lineAddress][0])) {
-                    cacheHit = true;
-                    break;
-                }
-            }
-
-            if (cacheHit) {
-                System.out.println("Cache hit!");
-            } else {
-                System.out.println("Cache miss!");
-                // Fetching the block from main memory to cache
-                cacheM[0][lineAddress] = mainM[tagAddress][lineAddress];
-            }
-
-            // Printing the data at the specified address
-            System.out.println("Data at address " + inputValues[0] + ": " + mainM[tagAddress][lineAddress][wordAddress]);
-            System.out.println("----------------------------------------------------------------------------------");
-            //System.out.println(mainM[tagAddress][lineAddress][wordAddress]);
+            
         } // Associative Mapping
         else if (mappingType == 2) {
             int TAG = linesMM;
@@ -79,6 +57,7 @@ public class App {
             // Looking for addresses
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
+            CalculateBits.convertAddressToBitsAssociative(inputValues, mainM);
 
         } // Invalid Mapping
         else {
