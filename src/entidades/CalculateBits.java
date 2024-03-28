@@ -33,11 +33,20 @@ public class CalculateBits {
             System.out.println("MAIN MEMORY ADDRESS: " + mainM[tagAddress][lineAddress][wordAddress]);
             System.out.println("CACHE MEMORY ADDRESS: " + mainM[tagAddress][lineAddress][wordAddress]);
             boolean cacheHit = false;
-            for(int j = 0; j < blockSizeBytes - 1; j++){
-                if(cacheM[0][lineAddress][j] == mainM[tagAddress][lineAddress][j]){
-                    cacheHit = true;
-                    cacheHitCount++;
+            for(int k = 0; k < blockSizeBytes - 1; k++){
+                for(int j = 0; j < blockSizeBytes - 1; j++){
+                    if(cacheM[0][k][j] == mainM[tagAddress][k][j]){
+                        cacheHit = true;
+                        cacheHitCount++;
+                        break;
+                    }
                 }
+            }
+            if(cacheHit == false){
+                for(int j = 0; j < blockSizeBytes; j++){
+                    cacheM[0][lineAddress][j] = mainM[tagAddress][lineAddress][j];
+                }
+                cacheMissCount++;
             }
         }
         System.out.println("-----------------------------");
