@@ -58,7 +58,6 @@ public class App {
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
             CalculateBits.convertAddressToBitsAssociative(inputValues, mainM, cacheM, blockSizeBytes);
-
             AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
         } // Invalid Mapping
         else {
