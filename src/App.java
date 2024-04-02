@@ -37,10 +37,12 @@ public class App {
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
             // Convert addresses to bits
-            CalculateBits.convertAddressToBitsDirect(inputValues, mainM, cacheM, blockSizeBytes);
-            DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
-            // Checking if the address is in the cache
-            
+            try {
+                CalculateBits.convertAddressToBitsDirect(inputValues, mainM, cacheM, blockSizeBytes);
+                DirectMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            } catch (Exception e) {
+                System.out.println("Address out of limits. Please enter a valid address.");
+            }
         } // Associative Mapping
         else if (mappingType == 2) {
             int TAG = linesMM;
@@ -58,7 +60,11 @@ public class App {
             System.out.println("Enter addresses separated by space: ");
             String[] inputValues = scanner.nextLine().split(" ");
             CalculateBits.convertAddressToBitsAssociative(inputValues, mainM, cacheM, blockSizeBytes);
-            AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            try {
+                AssociativeMemoryStorage.outputCacheMemory(TAG, linesCACHE, blockSizeBytes, cacheM);
+            } catch (Exception e) {
+                System.out.println("Address out of limits. Please enter a valid address.");
+            }
         } // Invalid Mapping
         else {
             System.out.println("Invalid mapping type. Please choose 1 or 2.");
